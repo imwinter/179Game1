@@ -2,7 +2,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<title>My first Three.js app</title>
+		<title>Cube Escape</title>
 		<style>canvas { width: 100%; height: 100% }</style>
 	</head>
 	<body>
@@ -40,6 +40,7 @@
 				 mesh.position.x = (i*40);
 				 mesh.position.y = 10;
 				 mesh.position.z = (j*40);
+				 mesh.ID = (i+1)+(j*8);
 				 mesh.castShadow = mesh.receiveShadow = true;
 				 cubeArray.add(mesh);
 				 objects.push(mesh);
@@ -86,7 +87,12 @@
 				var intersects = raycaster.intersectObjects( objects );
 
 				if ( intersects.length > 0 ) {
-					console.log("success");
+					var clicked = intersects[0].object.ID;
+					for(var i=0;i<objects.length;i++){
+						if(objects[i].ID==clicked){
+						objects[i].material.color.setHex(0xFF0000);
+						}
+					}
 
 				}
 
