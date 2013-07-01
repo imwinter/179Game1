@@ -8,9 +8,13 @@
 	<body>
 		<script src="js/three.min.js"></script>
 		<script src="js/jquery.min.js"></script>
+		<script src='js/THREEx.KeyboardState.js'></script>
 		<script>
 			var scene = new THREE.Scene();
 			var objects = [];
+			var currentRow = -1;
+			var currentCol = -1;
+			var keyboard = new THREEx.KeyboardState();
 			var projector = new THREE.Projector();
 			var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 			var mouse = new THREE.Vector2();
@@ -67,10 +71,22 @@
 			camera.rotation.x = -44.8;
 			
 			function animate(t) {
-				// you need to update lookAt every frame
-				//camera.lookAt(plane.position);
-				// renderer automatically clears unless autoClear = false
-				
+				if(keyboard.pressed('up')){
+				console.log('up');
+				currentCol=-1;
+				if(currentRow<7)
+					currentRow++;
+				else
+					curentRow=0;
+				}
+				if(keyboard.pressed('down')){
+				console.log('down');
+				currentCol=-1;
+				if(currentRow>0)
+					currentRow--;
+				else
+					curentRow=7;
+			}
 				renderer.render(scene, camera);
 				window.requestAnimationFrame(animate, renderer.domElement);
 			};
@@ -104,15 +120,10 @@
 				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 			}
-	  
-	  
-			/*
-			var render = function () {
-				requestAnimationFrame(render);
+		
+			
 
-
-				renderer.render(scene, camera);
-			};*/
+	  
 
 		</script>
 	</body>
