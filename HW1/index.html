@@ -1,0 +1,113 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<title>My first Three.js app</title>
+		<style>canvas { width: 100%; height: 100% }</style>
+	</head>
+	<body>
+		<script src="js/three.min.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script>
+			var scene = new THREE.Scene();
+			var objects = [];
+			var projector = new THREE.Projector();
+			var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+			var mouse = new THREE.Vector2();
+
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+			renderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
+			renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			//Light
+			var light = new THREE.SpotLight();
+			light.position.set( 400, 800, -400 );
+			scene.add(light);
+			
+			// enable shadows on the renderer
+			renderer.shadowMapEnabled = true;
+			// enable shadows for a light
+			light.castShadow = true;
+			// enable shadows for an object
+			
+			cubeArray = new THREE.Object3D();
+			for(var i=0;i<8;i++){
+				for(var j=0;j<8;j++){
+				 var mat = new THREE.MeshLambertMaterial({color: 0xFFFFFF});      
+				 var geo = new THREE.CubeGeometry(30, 30, 30);
+				 var mesh = new THREE.Mesh(geo, mat);
+				 mesh.position.x = (i*40);
+				 mesh.position.y = 10;
+				 mesh.position.z = (j*40);
+				 mesh.castShadow = mesh.receiveShadow = true;
+				 cubeArray.add(mesh);
+				 objects.push(mesh);
+				}
+			}
+			scene.add(cubeArray);
+			
+	  
+			//Plane
+			var planeGeo = new THREE.PlaneGeometry(500, 500, 10, 10);
+			var planeMat = new THREE.MeshLambertMaterial({color: 0xFF0055});
+			var plane = new THREE.Mesh(planeGeo, planeMat);
+			plane.rotation.x = -Math.PI/2;
+			plane.position.y = 0;
+			plane.position.x = 140;
+			plane.position.z = 100;
+			plane.receiveShadow = true;
+			scene.add(plane);
+			
+			
+			camera.position.z = 400;
+			camera.position.y = 300;
+			camera.position.x = 120;
+			camera.rotation.x = -44.8;
+			
+			function animate(t) {
+				// you need to update lookAt every frame
+				//camera.lookAt(plane.position);
+				// renderer automatically clears unless autoClear = false
+				
+				renderer.render(scene, camera);
+				window.requestAnimationFrame(animate, renderer.domElement);
+			};
+			animate(new Date().getTime());
+			
+			function onDocumentMouseDown( event ) {
+				event.preventDefault();
+
+				var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
+				projector.unprojectVector( vector, camera );
+
+				var raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+
+				var intersects = raycaster.intersectObjects( objects );
+
+				if ( intersects.length > 0 ) {
+					console.log("success");
+
+				}
+
+			}
+			function onDocumentMouseMove( event ) {
+
+				event.preventDefault();
+
+				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+			}
+	  
+	  
+			/*
+			var render = function () {
+				requestAnimationFrame(render);
+
+
+				renderer.render(scene, camera);
+			};*/
+
+		</script>
+	</body>
+</html>
